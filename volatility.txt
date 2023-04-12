@@ -2,15 +2,17 @@ import math
 from datetime import date
 
 td_consumerkey=[YOUR CONSUMER KEY]
-endpoint = 'https://api.tdameritrade.com/v1/marketdata/{stock_ticker}/quotes?'
 
+#Get Todays Date
 today = pd.to_datetime("today")
+
+#Get Start and End Dates in milliseconds
 k=time.mktime(today.timetuple())*1000
 k=round(k,0)
 k=int(k)
 i=k-(24*86400000)
 
-#Fair Value Volatility Calculation
+#Volatility Calculation
 endpoint = 'https://api.tdameritrade.com/v1/marketdata/{stock_ticker}/pricehistory'
 full_url = endpoint.format(stock_ticker='SPY')
 page = requests.get(url=full_url,
@@ -22,8 +24,10 @@ page = requests.get(url=full_url,
                            })
 content = json.loads(page.content)
 
+#Create List to Append Stock Prices
 stockPrice=[]
 
+#Loop through JSON output and append stock prices to stockPrice List 
 for i in range(len(content['candles'])):
     d=content['candles'][i]['datetime']
     dia=pd.Timestamp(d, unit='ms')
